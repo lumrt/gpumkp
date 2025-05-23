@@ -1,0 +1,12 @@
+{
+  "name": "gpumkp",
+  "version": "1.0.0",
+  "description": "Plateforme de location GPU",
+  "scripts": {
+    "start": "python run_demo.py",
+    "install-deps": "pip install -r requirement.txt"
+  },
+  "dependencies": {
+    "python-deps": "file:requirement.txt"
+  }
+} 

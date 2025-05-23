@@ -1,0 +1,1 @@
+rm -rf client_wallet.json worker_wallet.json broker_wallet.json demo.log client.log broker.log worker.log jobs_db.json job_bundle_train.tar.gz output
