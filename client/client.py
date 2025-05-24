@@ -86,6 +86,8 @@ def main():
     parser = argparse.ArgumentParser(description="Client pour soumettre des jobs GPU")
     parser.add_argument("--wallet", required=True, help="Chemin vers le fichier wallet")
     parser.add_argument("--train-script", default="client/example/train.py", help="Script d'entraînement")
+    parser.add_argument("--model-path", help="Chemin vers le fichier du modèle (optionnel)")
+    parser.add_argument("--data-path", help="Chemin vers le répertoire de données (optionnel)")
     parser.add_argument("--requirements", default="client/example/requirements.txt", help="Fichier requirements.txt")
     parser.add_argument("--output-dir", default="./output", help="Répertoire de sortie pour les résultats")
     args = parser.parse_args()
@@ -94,7 +96,7 @@ def main():
     os.makedirs(args.output_dir, exist_ok=True)
     
     # Créer le bundle de job
-    job_bundle_path = create_job_bundle(args.train_script, args.requirements)
+    job_bundle_path = create_job_bundle(args.train_script, args.requirements, args.model_path, args.data_path)
     
     # Soumettre le job
     job_id = submit_job(job_bundle_path, args.wallet)

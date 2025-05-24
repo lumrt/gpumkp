@@ -11,13 +11,16 @@ import shutil
 
 logger = logging.getLogger("job_creator")
 
-def create_job_bundle(train_script_path, requirements_path, output_path=None):
+def create_job_bundle(train_script_path, requirements_path, model_path=None, data_path=None, output_path=None):
     """
-    Crée un bundle de job (.tar.gz) contenant le script d'entraînement et les requirements.
+    Crée un bundle de job (.tar.gz) contenant le script d'entraînement, les requirements,
+    le modèle (optionnel) et les données (optionnel).
     
     Args:
         train_script_path: Chemin vers le script d'entraînement
         requirements_path: Chemin vers le fichier requirements.txt
+        model_path: Chemin vers le fichier du modèle (optionnel)
+        data_path: Chemin vers le répertoire de données (optionnel)
         output_path: Chemin de sortie pour le bundle (optionnel)
         
     Returns:
@@ -33,6 +36,22 @@ def create_job_bundle(train_script_path, requirements_path, output_path=None):
         shutil.copy(train_script_path, temp_dir_path / "train.py")
         shutil.copy(requirements_path, temp_dir_path / "requirements.txt")
         
+        # Copier le modèle s'il est fourni
+        if model_path and os.path.exists(model_path):
+            model_filename = os.path.basename(model_path)
+            shutil.copy(model_path, temp_dir_path / model_filename)
+            logger.info(f"Modèle {model_filename} ajouté au bundle.")
+        elif model_path:
+            logger.warning(f"Chemin du modèle {model_path} spécifié mais non trouvé. Il ne sera pas inclus.")
+
+        # Copier les données si le chemin est fourni et est un répertoire
+        if data_path and os.path.isdir(data_path):
+            data_dir_name = os.path.basename(data_path)
+            shutil.copytree(data_path, temp_dir_path / data_dir_name)
+            logger.info(f"Répertoire de données {data_dir_name} ajouté au bundle.")
+        elif data_path:
+            logger.warning(f"Chemin des données {data_path} spécifié mais n'est pas un répertoire valide ou n'existe pas. Il ne sera pas inclus.")
+
         # Créer le bundle
         if not output_path:
             output_path = f"job_bundle_{os.path.basename(train_script_path).split('.')[0]}.tar.gz"
